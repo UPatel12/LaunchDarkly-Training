@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:600,700"
+      rel="stylesheet"
+    />
+    <title>A simple calculator</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="calculator">
+        <div id="result">
+          <div id="history">
+            <p id="history-value"></p>
+          </div>
+          <div id="output">
+            <p id="output-value"></p>
+          </div>
+        </div>
+        <div id="keyboard">
+          <button class="operator" id="clear">C</button>
+          <button class="operator" id="backspace">CE</button>
+          <button class="operator advanced" id="%">%</button>
+          <button class="operator advanced" id="/">&#247;</button>
+          <button class="number" id="7">7</button>
+          <button class="number" id="8">8</button>
+          <button class="number" id="9">9</button>
+          <button class="operator advanced" id="*">&times;</button>
+          <button class="number" id="4">4</button>
+          <button class="number" id="5">5</button>
+          <button class="number" id="6">6</button>
+          <button class="operator" id="-">-</button>
+          <button class="number" id="1">1</button>
+          <button class="number" id="2">2</button>
+          <button class="number" id="3">3</button>
+          <button class="operator" id="+">+</button>
+          <button class="empty" id="empty"></button>
+          <button class="number" id="0">0</button>
+          <button class="empty" id="empty"></button>
+          <button class="operator" id="=">=</button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+<script>
+  var user = {
+    // firstName: "firstName",
+    // lastName: "lastName",
+    key: create_UUID(),
+    // custom: {
+      // groups: "2nd Grade"
+    }
+  };
+  //   var div = document.createElement("div");
+  //   document.body.appendChild(div);
+
+  //   div.appendChild(document.createTextNode("Initializing..."));
+
+  var ldclient = LDClient.initialize("5e0ecf5130bfe40902484b22", user);
+
+  function render() {
+    var shouldShow = ldclient.variation("change-something", false);
+    // var label = (shouldShow ? "Showing" : "Not showing") + " your feature to " + user.key;
+    // div.replaceChild(document.createTextNode(label), div.firstChild);
+    if (!shouldShow) {
+      $(".advanced").prop("disabled", true);
+    }
+  }
+
+  ldclient.on("ready", render);
+  ldclient.on("change", render);
+</script>
