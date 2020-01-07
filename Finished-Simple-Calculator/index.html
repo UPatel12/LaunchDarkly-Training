@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:600,700"
+      rel="stylesheet"
+    />
+    <title>A simple calculator</title>
+  </head>
+  <body>
+    <form action="/action_page.php">
+      <p style="color:white;">Grade: <input type="text" id="text1" /></p>
+    </form>
+    <div id="container">
+      <div id="calculator">
+        <div id="result">
+          <div id="history">
+            <p id="history-value"></p>
+          </div>
+          <div id="output">
+            <p id="output-value"></p>
+          </div>
+        </div>
+        <div id="keyboard">
+          <button class="operator" id="clear">C</button>
+          <button class="operator" id="backspace">CE</button>
+          <button class="operator advanced" id="%">%</button>
+          <button class="operator advanced" id="/">&#247;</button>
+          <button class="number" id="7">7</button>
+          <button class="number" id="8">8</button>
+          <button class="number" id="9">9</button>
+          <button class="operator advanced" id="*">&times;</button>
+          <button class="number" id="4">4</button>
+          <button class="number" id="5">5</button>
+          <button class="number" id="6">6</button>
+          <button class="operator" id="-">-</button>
+          <button class="number" id="1">1</button>
+          <button class="number" id="2">2</button>
+          <button class="number" id="3">3</button>
+          <button class="operator" id="+">+</button>
+          <button class="empty" id="empty"></button>
+          <button class="number" id="0">0</button>
+          <button class="empty" id="empty"></button>
+          <button class="operator" id="=">=</button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+<script>
+  // uncomment this user context if you want the key of your users to be the grade.
+  // NOTE - in this case you would only have a total of 5 users.
+
+  // var grade = GradeGenerate();
+  // var user = {
+  //   key: grade
+  // };
+
+  //
+  //
+  //
+
+  // this user context is stating that for  every unique user randomly group them in a grade
+  var grade = GradeGenerate();
+
+  var user = {
+    key: create_UUID(),
+    custom: {
+      groups: grade
+    }
+  };
+
+  console.log(user);
+  $("#text1").val(grade);
+
+  var ldclient = LDClient.initialize("$YOUR_CLIENT_SIDE_ID$", user);
+
+  function render() {
+    var shouldShow = ldclient.variation("$YOUR_FLAG_NAME$", false);
+
+    if (!shouldShow) {
+      $(".advanced").prop("disabled", true);
+    }
+  }
+
+  ldclient.on("ready", render);
+  ldclient.on("change", render);
+</script>
